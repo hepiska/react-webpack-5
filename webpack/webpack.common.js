@@ -1,19 +1,22 @@
-const HtmlWebpackPlugin =  require('html-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const webpack = require("webpack")
-const Dotenv = require("dotenv-webpack")
-const PreloadWebpackPlugin = require("preload-webpack-plugin")
-const path = require("path")
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const webpack = require('webpack');
+const Dotenv = require('dotenv-webpack');
+const path = require('path');
 
-const context = path.resolve(__dirname, '..');
 const srcPath = path.resolve(__dirname, '../src');
 const env = process.env.ENV_FILE ? process.env.ENV_FILE : './.env';
 
-
 const commonConfig = {
   entry: ['./src/index.tsx'],
-  module:{
-    rules:[
+  output: {
+    path: path.resolve(__dirname, '../', 'dist'),
+    publicPath: '/',
+    filename: 'js/bundle.js',
+    chunkFilename: 'js/[fullhash]-[name].js'
+  },
+  module: {
+    rules: [
       {
         test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
@@ -21,12 +24,12 @@ const commonConfig = {
           loader: 'babel-loader',
           options: {
             presets: [
-              "@babel/preset-env",
-              "@babel/preset-react",
-              "@babel/preset-typescript",
-            ],
+              '@babel/preset-env',
+              '@babel/preset-react',
+              '@babel/preset-typescript'
+            ]
           }
-        },
+        }
       },
       {
         test: /\.(css|scss|sass|less)$/i,
@@ -35,42 +38,42 @@ const commonConfig = {
           'css-loader',
           'sass-loader',
           {
-            loader: "less-loader", 
+            loader: 'less-loader',
             options: {
               lessOptions: {
-                 javascriptEnabled: true
+                javascriptEnabled: true
               }
             }
-          },
-        ],
+          }
+        ]
       },
       {
         test: /\.(bmp|gif|jpe?g|png|svg)$/,
-        use:{
+        use: {
           loader: 'file-loader',
           options: {
             name: 'media/images/[ext]/[name].[ext]',
-            esModule: false,
-          },
+            esModule: false
+          }
         }
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
-        use:{
+        use: {
           loader: 'file-loader?prefix=fonts/',
           options: {
             name: 'media/fonts/[name].[ext]',
-            esModule: false,
-          },
-        }, 
-      },
-    ],
+            esModule: false
+          }
+        }
+      }
+    ]
   },
-  resolve:{
-    extensions: ['.js', '.ts', '.tsx',".mjs"],
-    modules: [srcPath, 'node_modules'],
+  resolve: {
+    extensions: ['.js', '.ts', '.tsx', '.mjs'],
+    modules: [srcPath, 'node_modules']
   },
-  plugins:[
+  plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html',
       title: 'loan BE',
@@ -78,17 +81,18 @@ const commonConfig = {
         removeComments: true,
         collapseWhitespace: true,
         minifyCSS: true,
-        minifyJS: true,
-      },
+        minifyJS: true
+      }
     }),
     new MiniCssExtractPlugin({
       filename: '[name].[hash].css',
-      chunkFilename: '[id].[hash].css',
+      chunkFilename: '[id].[hash].css'
     }),
-    // new webpack.DefinePlugin({ __DEV__: process.env.NODE_ENV !== 'production' }),
-    // new PreloadWebpackPlugin({ rel: 'preload', include: 'initial' }),
-    // new Dotenv({ path: env, systemvars: true, expand: true }),
+    new webpack.DefinePlugin({
+      __DEV__: process.env.NODE_ENV !== 'production'
+    }),
+    new Dotenv({ path: env, systemvars: true, expand: true })
   ]
-}
+};
 
-module.exports = commonConfig
+module.exports = commonConfig;

@@ -1,16 +1,17 @@
-import React  from "react";
-import { render } from "react-dom";
-import { Button } from "antd";
-import 'antd/dist/antd.less'
-import "./index.less"
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import './index.less';
+import Pages from './pages';
 
-const App = () => {
-  return(
-    <div>
-      <Button>test</Button>
-      <p>test app</p>
-    </div>
-  )
-}
+export const App = () => {
+  return (
+    <BrowserRouter>
+      <Pages />
+    </BrowserRouter>
+  );
+};
+const container = document.getElementById('app') as HTMLElement;
+const root = createRoot(container);
 
-export default render(<App/>,  document.querySelector("#app") )
+export default root.render(<App />);
